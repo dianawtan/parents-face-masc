@@ -13,20 +13,23 @@ masc_data_header <- read_excel("01_raw_data/Gender_Results.xlsx", sheet = "Featu
   slice(1)
 
 masc_data <- read_excel("01_raw_data/Gender_Results.xlsx", sheet = "Features") 
+
 colnames(masc_data) <- masc_data_header
+
 masc_data <- masc_data %>%
   slice(-1) %>%
   rename("PARENT_ID" = "File Name",
          "group" = "Class") %>%
-  select(-c("Sno", "group")) %>%
+ dplyr:: select(-c("Sno", "group")) %>%
   mutate_at(c("n_sto","ex_ex", "ft_ft", "sto_pg", "ex_ch_L", "ex_ch_R", "sbal_sn_sbal", "sn_prn", "sn_sto", "n_prn", "gender_score", "facial_area"), as.numeric)
 
 masc_data$PARENT_ID <- as.character(masc_data$PARENT_ID)
 
 behav_data <- read_csv("01_raw_data/01_clean_data.csv") %>%
-  select(-c("abs_hor":"da_mean"))
+  dplyr::select(-c("abs_hor":"da_mean"))
 
-full_data <- full_join(behav_data, masc_data, by = "PARENT_ID")
+full_data <- full_join(behav_data, masc_data, by = "PARENT_ID")  %>%
+  distinct(PARENT_ID, .keep_all = TRUE)
 
 rm(masc_data_header)
 rm(behav_data)

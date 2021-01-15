@@ -16,7 +16,7 @@ clean_data <- read_csv("02_clean_data/01_clean_data.csv")
 
 # density plots
 
-ggdensity(clean_data$masc_score) # bimodel and I think it is because sexual dimorphism
+ggdensity(clean_data$masc_score) # bimodel because sexual dimorphism
 ggdensity(clean_data$n_sto) # normal
 ggdensity(clean_data$ex_ex) # normal
 ggdensity(clean_data$ft_ft) # slight positive skew

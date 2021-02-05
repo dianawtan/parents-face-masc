@@ -60,7 +60,7 @@ full_data <- right_join(full_data, norm_dist, by = "PARENT_ID")
 # selection of data used in manuscript
 
 manuscript_data <- full_data %>%
-  dplyr::select(anon_id, sex, group, ageAtScan, facial_area, masc_score, normdist)
+  dplyr::select(anon_id, sex, group, ageAtScan, facial_area, masc_score, normdist, parent_bmi, parent_head)
 
 #### export data ----
 

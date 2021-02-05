@@ -14,6 +14,9 @@ masc_data_header <- read_excel("01_raw_data/Gender_Results.xlsx", sheet = "Featu
 
 masc_data <- read_excel("01_raw_data/Gender_Results.xlsx", sheet = "Features") 
 
+norm_dist <- read_excel("02_clean_data/normdist_calc.xlsx") %>%
+  dplyr::select(PARENT_ID, normdist)
+
 colnames(masc_data) <- masc_data_header
 
 masc_data <- masc_data %>%
@@ -31,6 +34,9 @@ behav_data <- read_csv("01_raw_data/01_clean_data.csv") %>%
 full_data <- full_join(behav_data, masc_data, by = "PARENT_ID")  %>%
   distinct(PARENT_ID, .keep_all = TRUE)
 
+full_data <- full_data %>%
+  filter(PARENT_ID != "2011125MO")
+
 rm(masc_data_header)
 rm(behav_data)
 rm(masc_data)
@@ -41,8 +47,23 @@ rm(masc_data)
 
 full_data$masc_score <- 1 - full_data$gender_score
 
+#### data selection ----
+
+# add anonymous ID
+
+full_data$anon_id <- 1:nrow(full_data)
+
+# add norm dist
+
+full_data <- right_join(full_data, norm_dist, by = "PARENT_ID")
+
+# selection of data used in manuscript
+
+manuscript_data <- full_data %>%
+  dplyr::select(anon_id, sex, group, ageAtScan, facial_area, masc_score, normdist)
+
 #### export data ----
 
-write_csv(full_data, "02_clean_data/01_clean_data.csv")
+write_csv(manuscript_data, "02_clean_data/01_clean_data.csv")
 
 

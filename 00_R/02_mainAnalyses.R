@@ -6,7 +6,7 @@
 
 #### libraries ----
 library(pacman)
-p_load(psych, readr, tidyverse, sjstats, pwr, DescTools)
+pacman::p_load(psych, readr, tidyverse, sjstats, pwr, DescTools)
 
 
 #### data import ----

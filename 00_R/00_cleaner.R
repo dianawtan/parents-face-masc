@@ -67,3 +67,36 @@ manuscript_data <- full_data %>%
 write_csv(manuscript_data, "02_clean_data/01_clean_data.csv")
 
 
+#### random selection ----
+## of observations for reliability analyses
+
+
+fathers <- full_data %>%
+  filter(group == "Parent" & sex == "male")
+
+selectedFa <- fathers[sample(nrow(fathers), 7), ]
+
+mothers <- full_data %>%
+  filter(group == "Parent")
+
+selectedMo <- mothers[sample(nrow(mothers), 8), ]
+
+males <- full_data %>%
+  filter(group == "Control")
+
+selectedMales <- males[sample(nrow(males), 7), ]
+
+females <- full_data %>%
+  filter(group == "Control")
+
+selectedFemales <- females[sample(nrow(females), 8), ]
+
+randSelection <- bind_rows(selectedFemales, selectedMales)
+randSelection <- bind_rows(randSelection, selectedFa)
+randSelection <- bind_rows(randSelection, selectedMo)
+
+randSelection <- randSelection %>%
+  select(PARENT_ID, anon_id, sex, group, ageAtScan, facial_area, masc_score, normdist, parent_bmi, parent_head)
+
+write_csv(randSelection, "02_clean_data/randSelect.csv")
+

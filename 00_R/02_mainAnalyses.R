@@ -54,3 +54,4 @@ eta_sq(aov(masc_score ~ group*sex, data = data), partial = TRUE, ci.lvl = 0.95)
 summary(aov(masc_score ~ group*sex + ageAtScan + facial_area, data = data))
 eta_sq(aov(masc_score ~ group*sex + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
 
+

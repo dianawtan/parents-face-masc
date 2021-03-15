@@ -34,11 +34,3 @@ ggsave("probden.png",
        width = 21,
        height = 10)
 
-#### violin plot ----
-violinplot <- ggplot(data, aes(x = group_new, y = masc_score)) +
-  geom_violin() + 
-  geom_boxplot() +
-  geom_point(position = "jitter")
-  
-
-print(violinplot)

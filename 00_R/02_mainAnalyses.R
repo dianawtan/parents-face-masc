@@ -6,7 +6,7 @@
 
 #### libraries ----
 library(pacman)
-pacman::p_load(psych, readr, tidyverse, sjstats, pwr, DescTools)
+pacman::p_load(psych, readr, tidyverse, sjstats, pwr, DescTools, caret, MASS)
 
 
 #### data import ----
@@ -67,11 +67,11 @@ eta_sq(aov(g_n_sto ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.
 summary(aov(g_ex_ex ~ group*sex_parent, data = data))
 eta_sq(aov(g_ex_ex ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
 
-summary(aov(g_ft_ft_box ~ group*sex_parent, data = data))
-eta_sq(aov(g_ft_ft_box ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
+summary(aov(g_ft_ft_log ~ group*sex_parent, data = data))
+eta_sq(aov(g_ft_ft_log ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
 
-summary(aov(g_sto_pg_box ~ group*sex_parent, data = data))
-eta_sq(aov(g_sto_pg_box ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
+summary(aov(g_sto_pg_log ~ group*sex_parent, data = data))
+eta_sq(aov(g_sto_pg_log ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
 
 summary(aov(g_ex_ch_L ~ group*sex_parent, data = data))
 eta_sq(aov(g_ex_ch_L ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
@@ -100,11 +100,11 @@ eta_sq(aov(g_n_sto ~ group*sex_parent + ageAtScan + facial_area, data = data), p
 summary(aov(g_ex_ex ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(g_ex_ex ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
 
-summary(aov(g_ft_ft_box ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(g_ft_ft_box ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
+summary(aov(g_ft_ft_log ~ group*sex_parent + ageAtScan + facial_area, data = data))
+eta_sq(aov(g_ft_ft_log ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
 
-summary(aov(g_sto_pg_box ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(g_sto_pg_box ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
+summary(aov(g_sto_pg_log ~ group*sex_parent + ageAtScan + facial_area, data = data))
+eta_sq(aov(g_sto_pg_log ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
 
 summary(aov(g_ex_ch_L ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(g_ex_ch_L ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
@@ -127,10 +127,56 @@ eta_sq(aov(l_n_prn ~ group*sex_parent + ageAtScan + facial_area, data = data), p
 
 #### additional analyses re: sex of proband children ----
 
-# do parents of autistic boys show more masculine faces than those of autistic girls?
+### do parents of autistic boys show more masculine faces than those of autistic girls?
 summary(aov(masc_score ~ sex_child, data = dataF)) # no
 summary(aov(masc_score ~ sex_child, data = dataM)) # no
 
 summary(aov(masc_score ~ sex_child + ageAtScan + facial_area, data = dataF)) # no even after controlling
 summary(aov(masc_score ~ sex_child + ageAtScan + facial_area, data = dataM)) # no even after controlling
+
+### predictive analysis - do parents/controls' masculinity score predict autism status of children? (followed steps on http://www.sthda.com/english/articles/36-classification-methods-essentials/146-discriminant-analysis-essentials-in-r/)
+
+## Split the data into training (90%) and test set (10%)
+set.seed(5000)
+
+training.samples <- data$group %>%
+  createDataPartition(p = 0.9, list = FALSE)
+
+train.data <- data[training.samples, ]
+
+test.data <- data[-training.samples, ]
+
+## Select predictors to be entered into model
+
+train.data <- train.data %>%
+  dplyr::select(group, masc_score, g_n_sto, g_ex_ex, g_ft_ft,  g_ex_ch_R, l_sn_prn, l_n_prn) # variables that significantly differed between proband and control parents based on uncorrected alpha of .005
+
+test.data <- test.data %>%
+  dplyr::select(group, masc_score, g_n_sto, g_ex_ex, g_ft_ft, g_ex_ch_R, l_sn_prn, l_n_prn) # variables that significantly differed between proband and control parents based on uncorrected alpha of .005
+
+
+## Normalise the data
+
+# Estimate preprocessing parameters
+preproc.param <- train.data %>%
+  preProcess(method = c("center", "scale"))
+
+# transform the data using the estimated parameters
+train.transformed <- preproc.param %>%
+  predict(train.data)
+
+test.transformed <- preproc.param %>%
+  predict(test.data)
+
+## run Linear Discriminant Analysis
+
+# fit the model
+model <- lda(group ~ ., data = train.transformed)
+
+# make predictions
+predictions <- model %>%
+  predict(test.transformed)
+
+# model accuracy
+mean(predictions$class == test.transformed$group)
 

@@ -20,26 +20,40 @@ describeBy(x = data, group = c("group", "sex_parent"), digits = 3)
 
 #### check for confounding variables ----
 
-dataM <- data %>%
-  filter(sex_parent == "male") 
-
-dataF <- data %>%
-  filter(sex_parent == "female") 
-
 # combined sexes
 
 corr.test(data$masc_score, data$ageAtScan) #r = 0.26, p < .001, n = 355
-corr.test(data$masc_score, data$facial_area) #r = 0.55, p <.001. n = 355
+corr.test(data$masc_score, data$facial_area) #r = 0.55, p <.001, n = 355
 
-# males only
+corr.test(data$g_n_sto, data$ageAtScan) # r = 0.26, p < .001, n = 355
+corr.test(data$g_n_sto, data$facial_area)# r = 0.44, p < .001, n = 355
 
-corr.test(dataM$masc_score, dataM$ageAtScan) #r = 0.26, p < .001, n = 108
-corr.test(dataM$masc_score, dataM$facial_area) #r = 0.24, p = .01. n = 108
+corr.test(data$g_ex_ex, data$ageAtScan) # r = 0.15, p < .01, n = 355
+corr.test(data$g_ex_ex, data$facial_area) # r = 0.24, p < .001, n = 355
 
-# females only
+corr.test(data$g_ft_ft_log, data$ageAtScan) # r = 0.13, p < .01, n = 355
+corr.test(data$g_ft_ft_log, data$facial_area) # r = 0.45, p < .001, n = 355
 
-corr.test(dataF$masc_score, dataF$ageAtScan) #r = 0.20, p < .001, n = 247
-corr.test(dataF$masc_score, dataF$facial_area) #r = 0.38, p < .001, n = 247
+corr.test(data$g_sto_pg_log, data$ageAtScan) # r = 0.25, p < .001, n = 355
+corr.test(data$g_sto_pg_log, data$facial_area) # r = 0.55, p < .001, n = 355
+
+corr.test(data$g_ex_ch_L, data$ageAtScan) # r = 0.26, p < .001, n = 355
+corr.test(data$g_ex_ch_L, data$facial_area) # r = 0.56, p < .001, n = 355
+
+corr.test(data$g_ex_ch_R, data$ageAtScan) # r = 0.25, p < .001, n = 355
+corr.test(data$g_ex_ch_R, data$facial_area) # r = 0.49, p < .001, n = 355
+
+corr.test(data$l_sbal_sn_sbal, data$ageAtScan) # r = 0.12, p = .02, n = 355
+corr.test(data$l_sbal_sn_sbal, data$facial_area) # r = 0.21, p < .001, n = 355
+
+corr.test(data$l_sn_prn, data$ageAtScan) # r = 0.27, p < .001, n = 355
+corr.test(data$l_sn_prn, data$facial_area) # r = 0.38, p < .001, n = 355
+
+corr.test(data$l_sn_sto, data$ageAtScan) # r = 0.17, p < .001, n = 355
+corr.test(data$l_sn_sto, data$facial_area) # r = 0.35, p < .001, n = 355
+
+corr.test(data$l_n_prn, data$ageAtScan) # r = 0.20, p < .001, n = 355
+corr.test(data$l_n_prn, data$facial_area) # r = 0.41, p < .001, n = 355
 
 
 #### main analyses ----
@@ -54,76 +68,85 @@ eta_sq(aov(masc_score ~ group*sex_parent, data = data), partial = TRUE, ci.lvl =
 ## after controlling for age and facial area
 
 summary(aov(masc_score ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(masc_score ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
-
+eta_sq(aov(masc_score ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
+# d = .1554, 95% CI[.01, .11]
 
 ### facial distances
 
 ## before controlling for age and facial area
 
 summary(aov(g_n_sto ~ group*sex_parent, data = data))
-eta_sq(aov(g_n_sto ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(g_n_sto ~ group*sex_parent, data = data), partial = FALSE, ci.lvl = 0.95)
 
 summary(aov(g_ex_ex ~ group*sex_parent, data = data))
-eta_sq(aov(g_ex_ex ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(g_ex_ex ~ group*sex_parent, data = data), partial = FALSE, ci.lvl = 0.95)
 
 summary(aov(g_ft_ft_log ~ group*sex_parent, data = data))
-eta_sq(aov(g_ft_ft_log ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(g_ft_ft_log ~ group*sex_parent, data = data), partial = FALSE, ci.lvl = 0.95)
 
 summary(aov(g_sto_pg_log ~ group*sex_parent, data = data))
-eta_sq(aov(g_sto_pg_log ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(g_sto_pg_log ~ group*sex_parent, data = data), partial = FALSE, ci.lvl = 0.95)
 
 summary(aov(g_ex_ch_L ~ group*sex_parent, data = data))
-eta_sq(aov(g_ex_ch_L ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(g_ex_ch_L ~ group*sex_parent, data = data), partial = FALSE, ci.lvl = 0.95)
 
 summary(aov(g_ex_ch_R ~ group*sex_parent, data = data))
-eta_sq(aov(g_ex_ch_R ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(g_ex_ch_R ~ group*sex_parent, data = data), partial = FALSE, ci.lvl = 0.95)
 
 summary(aov(l_sbal_sn_sbal ~ group*sex_parent, data = data))
-eta_sq(aov(l_sbal_sn_sbal ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(l_sbal_sn_sbal ~ group*sex_parent, data = data), partial = FALSE, ci.lvl = 0.95)
 
 summary(aov(l_sn_prn ~ group*sex_parent, data = data))
-eta_sq(aov(l_sn_prn ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(l_sn_prn ~ group*sex_parent, data = data), partial = FALSE, ci.lvl = 0.95)
 
 summary(aov(l_sn_sto ~ group*sex_parent, data = data))
-eta_sq(aov(l_sn_sto ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(l_sn_sto ~ group*sex_parent, data = data), partial = FALSE, ci.lvl = 0.95)
 
 summary(aov(l_n_prn ~ group*sex_parent, data = data))
-eta_sq(aov(l_n_prn ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(l_n_prn ~ group*sex_parent, data = data), partial = FALSE, ci.lvl = 0.95)
 
 
 ## after controlling for age and facial area
 
 summary(aov(g_n_sto ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(g_n_sto ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(g_n_sto ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
+# d = .3517, 95% CI[.14, .56]
 
 summary(aov(g_ex_ex ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(g_ex_ex ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(g_ex_ex ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
+# d = .3136, 95% CI[.11, .52]
 
 summary(aov(g_ft_ft_log ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(g_ft_ft_log ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(g_ft_ft_log ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
+# d = .3809, 95% CI[.17, .59]
 
 summary(aov(g_sto_pg_log ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(g_sto_pg_log ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(g_sto_pg_log ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
+# d = .1097, 95% CI[0, .31]
 
 summary(aov(g_ex_ch_L ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(g_ex_ch_L ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(g_ex_ch_L ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
+# d = .2295, 95% CI[.1, .44]
 
 summary(aov(g_ex_ch_R ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(g_ex_ch_R ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(g_ex_ch_R ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
+# d = .2708, 95% CI[.06, .48]
 
 summary(aov(l_sbal_sn_sbal ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(l_sbal_sn_sbal ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(l_sbal_sn_sbal ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
+# d = .2708, 95% CI[.06, .48]
 
 summary(aov(l_sn_prn ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(l_sn_prn ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(l_sn_prn ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
+# d = .4135, 95% CI[.20, .63]
 
 summary(aov(l_sn_sto ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(l_sn_sto ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
+eta_sq(aov(l_sn_sto ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
+# d = .1679, 95% CI[.01, .38]
 
 summary(aov(l_n_prn ~ group*sex_parent + ageAtScan + facial_area, data = data))
-eta_sq(aov(l_n_prn ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = TRUE, ci.lvl = 0.95)
-
+eta_sq(aov(l_n_prn ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
+# d = .2783, 95% CI[.06, .48]
 
 #### additional analyses re: sex of proband children ----
 

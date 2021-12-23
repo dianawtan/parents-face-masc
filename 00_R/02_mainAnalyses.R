@@ -15,6 +15,8 @@ data <- read_csv("02_clean_data/02_clean_transf_data.csv")
 
 
 #### descriptive statistics ----
+describeBy(x = data, group = c("group"), digits = 3)
+
 describeBy(x = data, group = c("group", "sex_parent"), digits = 3)
 
 
@@ -160,7 +162,7 @@ summary(aov(masc_score ~ sex_child + ageAtScan + facial_area, data = dataM)) # n
 ### predictive analysis - do parents/controls' masculinity score predict autism status of children? (followed steps on http://www.sthda.com/english/articles/36-classification-methods-essentials/146-discriminant-analysis-essentials-in-r/)
 
 ## Split the data into training (90%) and test set (10%)
-set.seed(5000)
+set.seed(1234)
 
 training.samples <- data$group %>%
   createDataPartition(p = 0.9, list = FALSE)
@@ -172,10 +174,10 @@ test.data <- data[-training.samples, ]
 ## Select predictors to be entered into model
 
 train.data <- train.data %>%
-  dplyr::select(group, masc_score, g_n_sto, g_ex_ex, g_ft_ft,  g_ex_ch_R, l_sn_prn, l_n_prn) # variables that significantly differed between proband and control parents based on uncorrected alpha of .005
+  dplyr::select(group, masc_score, g_n_sto, g_ex_ex, g_ft_ft,  g_ex_ch_R, l_sn_prn, l_n_prn) # variables that significantly differed between proband and control parents based on corrected alpha of .005
 
 test.data <- test.data %>%
-  dplyr::select(group, masc_score, g_n_sto, g_ex_ex, g_ft_ft, g_ex_ch_R, l_sn_prn, l_n_prn) # variables that significantly differed between proband and control parents based on uncorrected alpha of .005
+  dplyr::select(group, masc_score, g_n_sto, g_ex_ex, g_ft_ft, g_ex_ch_R, l_sn_prn, l_n_prn) # variables that significantly differed between proband and control parents based on corrected alpha of .005
 
 
 ## Normalise the data
@@ -194,7 +196,7 @@ test.transformed <- preproc.param %>%
 ## run Linear Discriminant Analysis
 
 # fit the model
-model <- lda(group ~ ., data = train.transformed)
+model <- lda(group ~ ., data = train.transformed, cv = TRUE)
 
 # make predictions
 predictions <- model %>%

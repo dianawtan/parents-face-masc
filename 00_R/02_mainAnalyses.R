@@ -6,7 +6,7 @@
 
 #### libraries ----
 library(pacman)
-pacman::p_load(psych, readr, tidyverse, sjstats, pwr, DescTools, caret, MASS)
+pacman::p_load(psych, readr, tidyverse, sjstats, pwr, DescTools, caret, MASS, effectsize)
 
 
 #### data import ----
@@ -67,11 +67,14 @@ corr.test(data$l_n_prn, data$facial_area) # r = 0.41, p < .001, n = 355
 summary(aov(masc_score ~ group*sex_parent, data = data))
 eta_sq(aov(masc_score ~ group*sex_parent, data = data), partial = TRUE, ci.lvl = 0.95)
 
+
 ## after controlling for age and facial area
 
 summary(aov(masc_score ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(masc_score ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
-# d = .1554, 95% CI[.01, .11]
+# group effect: d = .16, 95% CI[.01, .35]
+# sex effect: d = 4.69, 95% CI[4.28, 5.08]
+
 
 ### facial distances
 
@@ -112,52 +115,67 @@ eta_sq(aov(l_n_prn ~ group*sex_parent, data = data), partial = FALSE, ci.lvl = 0
 
 summary(aov(g_n_sto ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(g_n_sto ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
-# d = .3517, 95% CI[.14, .56]
+# group effect: d = .3517, 95% CI[.14, .56]
+# sex effect: d = 1.10, 95% CI[.87, 1.32]
 
 summary(aov(g_ex_ex ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(g_ex_ex ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
-# d = .3136, 95% CI[.11, .52]
+# group effect: d = .3136, 95% CI[.11, .52]
+# sex effect: d = 1.18, 95% CI[.95, 1.41]
 
 summary(aov(g_ft_ft_log ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(g_ft_ft_log ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
-# d = .3809, 95% CI[.17, .59]
+# group effect: d = .3809, 95% CI[.17, .59]
+# sex effect: d = 1.25, 95% CI[1.02, 1.48]
 
 summary(aov(g_sto_pg_log ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(g_sto_pg_log ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
-# d = .1097, 95% CI[0, .31]
+# group effect: d = .1097, 95% CI[0, .31]
+# sex effect: d = .88, 95% CI[.66, 1.10]
 
 summary(aov(g_ex_ch_L ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(g_ex_ch_L ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
-# d = .2295, 95% CI[.1, .44]
+# group effect: d = .2295, 95% CI[.1, .44]
+# sex effect: d = 1.23, 95% CI[1.01, 1.46]
 
 summary(aov(g_ex_ch_R ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(g_ex_ch_R ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
-# d = .2708, 95% CI[.06, .48]
+# group effect: d = .2708, 95% CI[.06, .48]
+# sex effect: d = 1.19, 95% CI[.97, 1.42]
 
 summary(aov(l_sbal_sn_sbal ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(l_sbal_sn_sbal ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
-# d = .2708, 95% CI[.06, .48]
+# group effect: d = .2708, 95% CI[.06, .48]
+# sex effect: d = .80, 95% CI[.58, 1.02]
 
 summary(aov(l_sn_prn ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(l_sn_prn ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
-# d = .4135, 95% CI[.20, .63]
+# group effect: d = .4135, 95% CI[.20, .63]
+# sex effect: d = 1.38, 95% CI[1.45, 1.62]
 
 summary(aov(l_sn_sto ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(l_sn_sto ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
-# d = .1679, 95% CI[.01, .38]
+# group effect: d = .1679, 95% CI[.01, .38]
+# sex effect: d = .74, 95% CI[.52, .96]
 
 summary(aov(l_n_prn ~ group*sex_parent + ageAtScan + facial_area, data = data))
 eta_sq(aov(l_n_prn ~ group*sex_parent + ageAtScan + facial_area, data = data), partial = FALSE, ci.lvl = 0.95)
-# d = .2783, 95% CI[.06, .48]
+# group effect: d = .2783, 95% CI[.06, .48]
+# sex effect: d = 1.13, 95% CI[.91, 1.36]
 
 #### additional analyses re: sex of proband children ----
 
-### do parents of autistic boys show more masculine faces than those of autistic girls?
-summary(aov(masc_score ~ sex_child, data = dataF)) # no
-summary(aov(masc_score ~ sex_child, data = dataM)) # no
+## what is the sex breakdown of autistic children?
 
-summary(aov(masc_score ~ sex_child + ageAtScan + facial_area, data = dataF)) # no even after controlling
-summary(aov(masc_score ~ sex_child + ageAtScan + facial_area, data = dataM)) # no even after controlling
+length(which(data$sex_child == "male")) #142 males
+length(which(data$sex_child == "female")) #37 females
+
+
+### do parents of autistic boys show more masculine faces than those of autistic girls?
+summary(aov(masc_score ~ sex_child, data = data)) # no
+
+summary(aov(masc_score ~ sex_child + ageAtScan + facial_area, data = data)) # no even after controlling
+
 
 ### predictive analysis - do parents/controls' masculinity score predict autism status of children? (followed steps on http://www.sthda.com/english/articles/36-classification-methods-essentials/146-discriminant-analysis-essentials-in-r/)
 

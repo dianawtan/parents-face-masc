@@ -41,8 +41,9 @@ probden <- ggplot(data = data, aes(x = masc_score, y = normdist, colour = group_
 print(probden)
 
 
-ggsave("probden.tiff", 
+ggsave("probden.pdf", 
        plot = probden,
+       device = "pdf",
        units = "cm",
        dpi = 1000,
        width = 25,
